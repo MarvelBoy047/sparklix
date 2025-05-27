@@ -1,0 +1,48 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true # Good practice, ensures 'ADMIN-SERVICE' can be found as 'admin-service'
+      routes:
+        - id: user-service-auth # Routes for sparklix-user-service
+          uri: lb://sparklix-user-service # Matches 'sparklix-user-service' spring.application.name
+          predicates:
+            - Path=/api/auth/**
+        - id: user-service-users # Example if you add other user paths
+          uri: lb://sparklix-user-service
+          predicates:
+            - Path=/api/users/**
+
+        - id: show-catalog-service # Route for show-catalog-service
+          uri: lb://show-catalog-service # Assuming its spring.application.name is 'show-catalog-service'
+          predicates:
+            - Path=/api/shows/**
+
+        - id: admin-service # Route for admin-service
+          uri: lb://admin-service # <<--- CRITICAL CHANGE: Was sparklix-admin-service, now matches admin-service's actual spring.application.name
+          predicates:
+            - Path=/api/admin/**
+
+  # If you are NOT using Spring Cloud Config Server yet, comment this out to prevent startup issues/delays
+  # config:
+  #   import: optional:configserver:http://localhost:8888
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+  instance:
+    prefer-ip-address: true
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    reactor.netty.http.client: DEBUG
+    org.springframework.cloud.loadbalancer: DEBUG
