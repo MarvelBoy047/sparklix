@@ -1,0 +1,38 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: admin-service
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/sparklix_admin_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+    username: sparklixadmin
+    password: adminpass123
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    # properties:
+    #   hibernate.dialect: org.hibernate.dialect.MySQLDialect
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+  instance:
+    prefer-ip-address: true
+
+sparklix:
+  app:
+    jwtSecret: DefaultDevSecretKeyIsOkayForNowButChangeItLaterPlzThisIs32BytesLong!
+
+logging:
+  level:
+    com.sparklix.adminservice.security.jwt: DEBUG
+    com.sparklix.adminservice.util.JwtUtil: DEBUG
+    com.sparklix.adminservice: DEBUG 
+    org.springframework.security: DEBUG 
+    reactor.netty.http.client: DEBUG
