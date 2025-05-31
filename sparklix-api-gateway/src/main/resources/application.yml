@@ -1,0 +1,71 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true # Important for matching lb://SERVICE-NAME
+      routes:
+        # User Service Routes
+        - id: user-service-auth
+          uri: lb://sparklix-user-service # Matches user-service's spring.application.name
+          predicates:
+            - Path=/api/auth/**
+        - id: user-service-users
+          uri: lb://sparklix-user-service
+          predicates:
+            - Path=/api/users/**
+
+        # Show Catalog Service Routes
+        - id: show-catalog-service-browse
+          uri: lb://show-catalog-service # Matches show-catalog-service's spring.application.name
+          predicates:
+            - Path=/api/shows/**
+        - id: show-catalog-service-sync-trigger
+          uri: lb://show-catalog-service
+          predicates:
+            - Path=/api/catalog/sync/**
+
+        # Admin Service Routes
+        # This single route catches both management and internal data paths.
+        # You might split this later if different filters/security are needed.
+        - id: admin-service-all
+          uri: lb://admin-service # Matches admin-service's spring.application.name
+          predicates:
+            - Path=/api/admin/**
+        # If you need a separate route for internal, it would be:
+        # - id: admin-service-internal
+        #   uri: lb://admin-service
+        #   predicates:
+        #     - Path=/api/internal/data/admin/**
+
+        # Booking Service Route
+        - id: booking-service
+          uri: lb://booking-service # Matches booking-service's spring.application.name
+          predicates:
+            - Path=/api/bookings/**
+
+        # --- ADDED: Payment Service Route ---
+        - id: payment-service
+          uri: lb://payment-service # Matches payment-service's spring.application.name
+          predicates:
+            - Path=/api/payments/** # This will route /api/payments/create-order, /api/payments/verify-signature, /api/payments/webhook/razorpay
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+  instance:
+    prefer-ip-address: true
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    reactor.netty.http.client: DEBUG
+    org.springframework.cloud.loadbalancer: DEBUG
+    # com.sparklix.commons.aop.LoggingAspect: INFO # Keep this if you implement shared AOP

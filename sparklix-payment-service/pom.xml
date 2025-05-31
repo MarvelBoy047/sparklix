@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- This service now correctly inherits from your sparklix-parent -->
+    <parent>
+        <groupId>com.sparklix</groupId>
+        <artifactId>sparklix-parent</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+        <relativePath>../sparklix-parent/pom.xml</relativePath>
+    </parent>
+
+    <artifactId>sparklix-payment-service</artifactId>
+    <name>sparklix-payment-service</name>
+    <description>Payment Service for Sparklix</description>
+
+    <!--
+        REMOVE the <properties> section from here if it only contained java.version
+        and spring-cloud.version.
+        These will be inherited from sparklix-parent.
+        If you have other specific properties for this module, you can keep them.
+    -->
+    <!--
+    <properties>
+        <java.version>17</java.version> <!- This is inherited ->
+        <spring-cloud.version>2025.0.0</spring-cloud.version> <!- REMOVE THIS LINE ->
+    </properties>
+    -->
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+            <!-- Version managed by sparklix-parent (via Spring Boot BOM) -->
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+            <!-- Version managed by sparklix-parent (via Spring Boot BOM) -->
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <!-- Version managed by sparklix-parent (via Spring Boot BOM) -->
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+            <!-- Version managed by sparklix-parent (via Spring Cloud BOM) -->
+        </dependency>
+
+        <!-- JJWT Dependencies - versions managed by sparklix-parent -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+        </dependency>
+         <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <!-- End JJWT -->
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope> <!-- scope should match parent's management -->
+        </dependency>
+        <dependency>
+            <groupId>com.razorpay</groupId>
+            <artifactId>razorpay-java</artifactId>
+            <version>1.4.6</version> <!-- Keep explicit version as it's not in Spring Boot BOM -->
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <!--
+        REMOVE the <dependencyManagement> section for spring-cloud-dependencies from here.
+        It is already defined and imported in your sparklix-parent.
+        Child modules inherit dependencyManagement, they don't redefine it for BOMs already in parent.
+    -->
+    <!--
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version> <!- This was causing the issue ->
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    -->
+
+    <build>
+        <plugins>
+            <!-- maven-compiler-plugin configuration is INHERITED from sparklix-parent -->
+            <!-- We want it to inherit the <parameters>true</parameters> setting -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <!-- Configuration for annotationProcessorPaths specifically for this module if needed, -->
+                <!-- but often the parent's is sufficient. -->
+                <!-- If parent already has lombok in annotationProcessorPaths, this might be redundant -->
+                <!-- <configuration>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                             <version>${lombok.version}</version> <!- If not managed by parent's pluginManagement ->
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration> -->
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <!-- Configuration (like lombok exclude) inherited from parent -->
+            </plugin>
+        </plugins>
+    </build>
+</project>

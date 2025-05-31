@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.sparklix</groupId> <!-- Matches your parent POM's groupId -->
+		<artifactId>sparklix-parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>../sparklix-parent/pom.xml</relativePath> <!-- Path to your parent POM -->
+	</parent>
+
+	<artifactId>sparklix-eureka-server</artifactId> <!-- Your artifactId for this module -->
+	<name>sparklix-eureka-server</name>
+	<description>Eureka Discovery Server for Sparklix Microservices</description>
+
+	<properties>
+		<!-- Inherits java.version from parent -->
+		<!-- Spring Cloud version is managed by parent's dependencyManagement -->
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
+			<!-- Version will be managed by spring-cloud-dependencies in parent POM -->
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+        <!-- Optional: For JAXB dependencies if needed with newer JDKs and older Spring Cloud versions -->
+        <!-- If you are on JDK 11+ and Spring Boot 2.x with older Spring Cloud, you might need these.
+             For Spring Boot 3.x / Spring Cloud 2022.x+ using Jakarta EE, these are typically not needed
+             or different (jakarta.xml.bind-api). Your parent POM manages Spring Boot 3.3.0, so likely not needed.
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.activation</groupId>
+            <artifactId>javax.activation-api</artifactId>
+        </dependency>
+        -->
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<!-- Configuration inherited from parent -->
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

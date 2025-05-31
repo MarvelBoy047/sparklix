@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.sparklix</groupId>
+    <artifactId>sparklix-parent</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>sparklix-parent</name>
+    <description>Parent POM for Sparklix Microservices Project</description>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>17</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+
+        <!-- Framework Versions -->
+        <spring-boot.version>3.3.0</spring-boot.version>
+        <spring-cloud.version>2023.0.2</spring-cloud.version> <!-- Corresponds to Spring Boot 3.3.x -->
+
+        <!-- Library Versions -->
+        <lombok.version>1.18.30</lombok.version>
+        <jjwt.version>0.11.5</jjwt.version>
+        <junit.jupiter.version>5.10.2</junit.jupiter.version> <!-- Aligned with Spring Boot 3.3.0 managed version -->
+
+        <!-- Maven Plugin Versions -->
+        <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
+        <maven-surefire-plugin.version>3.3.0</maven-surefire-plugin.version>
+
+    </properties>
+
+    <modules>
+        <module>../sparklix-eureka-server</module>
+        <module>../sparklix-api-gateway</module>
+        <module>../sparklix-user-service</module>
+        <module>../sparklix-admin-service</module>
+        <module>../sparklix-show-catalog-service</module>
+        <module>../sparklix-booking-service</module> <!-- Added booking service -->
+        <module>../sparklix-payment-service</module>
+        <!-- <module>../sparklix-aspects</module> --> <!-- If you create a shared aspects module later -->
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- Spring Boot Bill of Materials (BOM) - Manages versions for Spring Boot starters and many common libraries -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- Spring Cloud Bill of Materials (BOM) - Manages versions for Spring Cloud components -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- JUnit 5 Bill of Materials (BOM) - Manages versions for JUnit 5 components -->
+            <dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>${junit.jupiter.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- Explicitly manage versions for libraries not covered by Spring Boot/Cloud BOMs, -->
+            <!-- or if a specific version is strictly required. -->
+
+            <!-- Lombok -->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+                <scope>provided</scope> <!-- Lombok is a compile-time utility -->
+            </dependency>
+
+            <!-- JJWT -->
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-api</artifactId>
+                <version>${jjwt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-impl</artifactId>
+                <version>${jjwt.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-jackson</artifactId>
+                <version>${jjwt.version}</version>
+                <scope>runtime</scope>
+                <exclusions>
+                    <!-- Exclude jjwt's transitive Jackson to use Spring Boot's managed version -->
+                    <exclusion>
+                        <groupId>com.fasterxml.jackson.core</groupId>
+                        <artifactId>jackson-databind</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.fasterxml.jackson.core</groupId>
+                        <artifactId>jackson-core</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.fasterxml.jackson.core</groupId>
+                        <artifactId>jackson-annotations</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <!--
+                Core Jackson libraries are managed by spring-boot-dependencies BOM.
+                Services needing them (e.g., via spring-boot-starter-web) will get the correct versions.
+                No need to list them here without a version unless you intend to override the BOM,
+                which is generally not recommended unless for specific reasons.
+            -->
+            <!-- Example: If you needed to *ensure* a specific jackson-databind for all modules:
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version.managed.by.spring.boot}</version> <!- This would typically come from a property defined by the BOM itself or align with spring-boot.version ->
+            </dependency>
+            -->
+        </dependencies>
+    </dependencyManagement>
+
+    <!-- Common build plugins and their versions managed here -->
+    <build>
+        <pluginManagement> <!-- Define plugin versions for all child modules -->
+            <plugins>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${spring-boot.version}</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>repackage</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven-compiler-plugin.version}</version>
+                    <configuration>
+                        <source>${java.version}</source>
+                        <target>${java.version}</target>
+                        <parameters>true</parameters> <!-- Crucial for Spring MVC PathVariable name resolution -->
+                        <annotationProcessorPaths>
+                            <path>
+                                <groupId>org.projectlombok</groupId>
+                                <artifactId>lombok</artifactId>
+                                <version>${lombok.version}</version>
+                            </path>
+                            <!-- You might need to add mapstruct's processor if you use MapStruct -->
+                            <!--
+                            <path>
+                                <groupId>org.mapstruct</groupId>
+                                <artifactId>mapstruct-processor</artifactId>
+                                <version>${mapstruct.version}</version>
+                            </path>
+                            -->
+                        </annotationProcessorPaths>
+                    </configuration>
+                </plugin>
+                 <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${maven-surefire-plugin.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <!-- Plugins to be applied to all modules (unless overridden in child) -->
+        <!-- Usually, these specific plugin executions are defined in child modules if needed, -->
+        <!-- or the spring-boot-maven-plugin is sufficient. -->
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <!-- Configuration will be inherited from pluginManagement -->
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <!-- Configuration will be inherited from pluginManagement -->
+            </plugin>
+        </plugins>
+    </build>
+</project>

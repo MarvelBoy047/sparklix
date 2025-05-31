@@ -1,0 +1,13 @@
+package com.sparklix.eurekaserver; // Adjust package
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+class SparklixEurekaServerApplicationTests {
+
+	@Test
+	void contextLoads() {
+	}
+
+}
